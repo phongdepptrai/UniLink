@@ -94,3 +94,20 @@ body {
   background: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(20px);
 }
+
+.glass-effect {
+  background: rgba(247, 249, 251, 0.6);
+  backdrop-filter: blur(20px);
+}
+
+.gradient-button {
+  background: linear-gradient(135deg, #031635 0%, #1a2b4b 100%);
+}
+
+.gradient-primary {
+  background: linear-gradient(135deg, #031635 0%, #1a2b4b 100%);
+}
+
+.shadow-ambient {
+  box-shadow: 0 32px 64px rgba(25, 28, 30, 0.06);
+}
