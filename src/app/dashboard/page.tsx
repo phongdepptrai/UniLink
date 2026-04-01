@@ -95,12 +95,16 @@ export default function Dashboard() {
               <span>Q&A</span>
             </div>
           </nav>
-          <button className="mt-auto mb-4 bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold py-3 px-4 rounded-full flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all active:scale-95">
+          <Link
+            href="/dashboard/chat"
+            className="mt-auto mb-4 bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold py-3 px-4 rounded-full flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all active:scale-95"
+            id="new-discussion-btn"
+          >
             <span className="material-symbols-outlined" data-icon="add">
               add
             </span>
             <span>New Discussion</span>
-          </button>
+          </Link>
           <div className="border-t border-outline-variant/20 pt-4 space-y-1">
             <div className="text-slate-600 dark:text-slate-400 p-3 flex items-center gap-3 hover:bg-[#e0e3e5] dark:hover:bg-slate-800 transition-all cursor-pointer">
               <span className="material-symbols-outlined" data-icon="settings">

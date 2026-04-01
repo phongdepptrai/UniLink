@@ -1,36 +1,121 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AnonEdu — Anonymous Academic Sanctuary
+
+A real-time, anonymous platform for students to discuss, share, and connect without revealing their identities. Built with **Next.js 16**, **Pusher Channels**, and **Upstash Redis**.
+
+## Features
+
+- **Pseudo-anonymous Identity** — Students chat under auto-generated anonymous IDs.
+- **School Verification** — Verify student status to unlock school-only rooms.
+- **Dashboard** — Discovery hub to browse trending schools and rooms.
+- **Anonymous Real-time Chat (Omegle-style)** — Click "New Discussion" on the dashboard sidebar to get matched with a random fellow student for a private 1-on-1 conversation.
+  - Matchmaking queue powered by **Upstash Redis** (serverless).
+  - Real-time messaging via **Pusher Channels**.
+  - Skip / Next partner feature.
+  - Auto-cleanup of stale waiting entries (60s TTL).
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 16 (App Router) |
+| Styling | Tailwind CSS 4 + Vanilla CSS |
+| Realtime | Pusher Channels |
+| Matchmaking Queue | Upstash Redis |
+| Auth | NextAuth.js (Google + Credentials) |
+| Database | MongoDB (via Mongoose) |
+| Deployment | Vercel |
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+
+- npm, yarn, pnpm, or bun
+
+### 1. Install dependencies
+
+```bash
+npm install
+```
+
+### 2. Set up environment variables
+
+Create a `.env.local` file (a template is included) and fill in your credentials:
+
+```env
+# Pusher Channels (https://pusher.com)
+PUSHER_APP_ID=your_app_id
+NEXT_PUBLIC_PUSHER_KEY=your_key
+PUSHER_SECRET=your_secret
+NEXT_PUBLIC_PUSHER_CLUSTER=ap1
+
+# Upstash Redis (https://upstash.com)
+UPSTASH_REDIS_REST_URL=your_redis_url
+UPSTASH_REDIS_REST_TOKEN=your_redis_token
+```
+
+### 3. Run the development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/
+├── app/
+│   ├── api/
+│   │   ├── match/         # POST — matchmaking (Redis queue)
+│   │   ├── send/          # POST — send message (Pusher trigger)
+│   │   └── leave/         # POST — leave chat / cleanup
+│   ├── auth/
+│   │   └── signup/        # Sign-up page
+│   ├── dashboard/
+│   │   ├── chat/          # Anonymous chat page (Omegle-style)
+│   │   └── page.tsx       # Dashboard / discovery hub
+│   ├── main/
+│   │   ├── privacy/       # Privacy mission page
+│   │   ├── security/      # Security FAQ page
+│   │   ├── layout.tsx     # Main layout (nav + footer)
+│   │   └── page.tsx       # Home / landing page
+│   ├── globals.css        # Design tokens & global styles
+│   ├── layout.tsx         # Root layout
+│   └── page.tsx           # Root redirect
+├── components/            # Shared UI components
+└── lib/
+    └── pusher.ts          # Pusher server instance (shared)
+```
 
-## Learn More
+## Anonymous Chat Flow
 
-To learn more about Next.js, take a look at the following resources:
+```
+User clicks "New Discussion" on Dashboard sidebar
+  → Navigates to /dashboard/chat
+  → Clicks "Find a Partner"
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+User A:
+  → POST /api/match { userId: "anon-xxx" }
+  → Redis: no one waiting → queued, subscribes to Pusher user channel
+  → Waiting...
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+User B:
+  → POST /api/match { userId: "anon-yyy" }
+  → Redis: found User A → creates roomId
+  → Pusher: notifies User A with roomId
+  → Both subscribe to chat-{roomId}
+  → Real-time messaging via POST /api/send
+```
 
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Push to GitHub.
+2. Import project in [Vercel](https://vercel.com).
+3. Add all environment variables from `.env.local` to Vercel Environment Variables.
+4. Deploy.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## License
+
+This project is for educational purposes.
