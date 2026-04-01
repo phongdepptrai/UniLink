@@ -83,7 +83,7 @@ export default function Home() {
 
           {/* Main CTA */}
           <div className="space-y-4">
-            <button className="w-full flex items-center justify-center gap-3 bg-surface-container-lowest border border-outline-variant/20 py-4 px-6 rounded-full shadow-sm hover:bg-surface-container-low transition-all active:scale-95 duration-200 group">
+            <button className="w-full flex items-center justify-center gap-3 bg-surface-container-lowest border border-outline-variant/20 py-4 px-6 rounded-full shadow-sm hover:bg-surface-container-low focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-all active:scale-95 duration-200 group">
               <Image
                 alt="Google Logo"
                 className="w-6 h-6"
@@ -97,11 +97,11 @@ export default function Home() {
             </button>
             <p className="text-center text-xs text-outline font-medium px-4">
               By signing in, you agree to our{" "}
-              <Link href="#" className="text-primary hover:underline">
+              <Link href="#" className="text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 rounded-sm">
                 Terms of Service
               </Link>{" "}
               and{" "}
-              <Link href="#" className="text-primary hover:underline">
+              <Link href="#" className="text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 rounded-sm">
                 Community Guidelines
               </Link>
               .
@@ -190,7 +190,7 @@ export default function Home() {
             </div>
             <Link
               href="#"
-              className="inline-flex items-center gap-2 text-primary font-bold text-sm hover:gap-3 transition-all"
+              className="inline-flex items-center gap-2 text-primary font-bold text-sm hover:gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm transition-all"
             >
               Learn about our privacy mission
               <span
