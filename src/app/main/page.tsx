@@ -118,9 +118,9 @@ export default function Home() {
                       </button>
                     </div>
                   </div>
-                  <button className="w-full py-4 gradient-button text-on-primary rounded-full font-bold shadow-lg shadow-primary/10 hover:scale-[1.02] active:scale-95 transition-all">
+                  <Link href="/dashboard" className="w-full py-4 gradient-button text-on-primary rounded-full font-bold shadow-lg shadow-primary/10 hover:scale-[1.02] active:scale-95 transition-all block text-center">
                     Sign In
-                  </button>
+                  </Link>
                 </form>
 
                 <div className="space-y-4">
