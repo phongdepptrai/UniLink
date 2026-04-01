@@ -20,12 +20,16 @@ function generateUserId(): string {
   return `anon-${Math.random().toString(36).slice(2, 8)}`;
 }
 
+// ⚡ Bolt: Cache Intl.DateTimeFormat instance to avoid creating it on every message render (which happens inside loops).
+// toLocaleTimeString([], { options }) is very slow because it implicitly instantiates this formatter every time.
+const timeFormatter = new Intl.DateTimeFormat([], {
+  hour: "2-digit",
+  minute: "2-digit",
+});
+
 // Format timestamp for display
 function formatTime(timestamp: number): string {
-  return new Date(timestamp).toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  return timeFormatter.format(timestamp);
 }
 
 export default function ChatPage() {

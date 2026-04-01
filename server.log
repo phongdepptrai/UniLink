@@ -1,0 +1,12 @@
+
+> tmpapp@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.1 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+✓ Ready in 523ms
+
+○ Compiling /dashboard/chat ...
+ GET /dashboard/chat 200 in 5.9s (next.js: 5.4s, application-code: 524ms)
+[browser] "⨯ unhandledRejection:" You must pass your app key when you instantiate Pusher.
