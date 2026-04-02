@@ -34,7 +34,7 @@ export default function SecurityFAQPage() {
           <section className="space-y-4">
             <h2 className="text-2xl font-bold font-headline text-primary">Can I delete my data permanently?</h2>
             <p className="text-on-surface-variant leading-relaxed">
-              Yes. We have a "Digital Erasure" policy. When you request data deletion, all 
+              Yes. We have a &quot;Digital Erasure&quot; policy. When you request data deletion, all
               contributions (except shared educational resources where you are co-author) 
               are permanently scrubbed with zero traces remaining in our backups.
             </p>
