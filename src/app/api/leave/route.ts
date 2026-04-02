@@ -15,6 +15,17 @@ export async function POST(request: Request) {
   try {
     const { roomId, userId } = await request.json();
 
+    // Security enhancement: Type and length validation
+    if (roomId !== undefined && typeof roomId !== 'string') {
+      return NextResponse.json({ error: "Invalid roomId" }, { status: 400 });
+    }
+    if (userId !== undefined && typeof userId !== 'string') {
+      return NextResponse.json({ error: "Invalid userId" }, { status: 400 });
+    }
+    if ((roomId && roomId.length > 100) || (userId && userId.length > 100)) {
+      return NextResponse.json({ error: "Identifier too long" }, { status: 400 });
+    }
+
     // If the user was in a room, notify the partner
     if (roomId) {
       await pusherServer.trigger(`chat-${roomId}`, "partner-left", {

@@ -14,6 +14,28 @@ export async function POST(request: Request) {
       );
     }
 
+    // Security enhancement: Input validation to prevent DoS via non-string payloads
+    if (typeof roomId !== 'string' || typeof text !== 'string' || typeof sender !== 'string') {
+      return NextResponse.json(
+        { error: "Invalid input types: expected strings" },
+        { status: 400 }
+      );
+    }
+
+    if (roomId.length > 100 || sender.length > 100) {
+      return NextResponse.json(
+        { error: "Identifier too long" },
+        { status: 400 }
+      );
+    }
+
+    if (text.length > 1000) {
+      return NextResponse.json(
+        { error: "Message too long" },
+        { status: 400 }
+      );
+    }
+
     // Trigger the message event on the shared chat channel
     await pusherServer.trigger(`chat-${roomId}`, "message-event", {
       text,

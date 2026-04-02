@@ -24,6 +24,21 @@ export async function POST(request: Request) {
       );
     }
 
+    // Security enhancement: Type and length validation
+    if (typeof userId !== 'string') {
+      return NextResponse.json(
+        { error: "Invalid input: userId must be a string" },
+        { status: 400 }
+      );
+    }
+
+    if (userId.length > 100) {
+      return NextResponse.json(
+        { error: "Invalid input: userId is too long" },
+        { status: 400 }
+      );
+    }
+
     // Atomically get and delete the waiting user to prevent race conditions
     const waitingUser = await redis.getdel<string>(WAITING_KEY);
 
