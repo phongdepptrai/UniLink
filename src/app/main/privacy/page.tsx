@@ -25,7 +25,7 @@ export default function PrivacyPage() {
           <section className="space-y-4">
             <h2 className="text-2xl font-bold font-headline text-primary">2. No Data Tracking</h2>
             <p className="text-on-surface-variant leading-relaxed">
-              We don't track your clicks to sell ads. We don't build shadow profiles. Our revenue comes from 
+              We don&apos;t track your clicks to sell ads. We don&apos;t build shadow profiles. Our revenue comes from
               institutional partnerships, not from your browsing history.
             </p>
           </section>

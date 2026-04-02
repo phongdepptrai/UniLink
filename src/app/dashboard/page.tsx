@@ -37,7 +37,10 @@ export default function Dashboard() {
               />
             </div>
             <div className="flex items-center gap-2">
-              <button className="p-2 rounded-full hover:bg-slate-200/50 dark:hover:bg-slate-700/50 transition-colors active:scale-95 duration-200">
+              <button
+                className="p-2 rounded-full hover:bg-slate-200/50 dark:hover:bg-slate-700/50 transition-colors active:scale-95 duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                aria-label="Notifications"
+              >
                 <span
                   className="material-symbols-outlined text-[#031635] dark:text-[#3afea0]"
                   data-icon="notifications"
@@ -45,7 +48,10 @@ export default function Dashboard() {
                   notifications
                 </span>
               </button>
-              <button className="p-2 rounded-full hover:bg-slate-200/50 dark:hover:bg-slate-700/50 transition-colors active:scale-95 duration-200">
+              <button
+                className="p-2 rounded-full hover:bg-slate-200/50 dark:hover:bg-slate-700/50 transition-colors active:scale-95 duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                aria-label="User profile"
+              >
                 <span
                   className="material-symbols-outlined text-[#031635] dark:text-[#3afea0]"
                   data-icon="account_circle"
