@@ -109,8 +109,9 @@ export default function Home() {
                         type="password"
                       />
                       <button
-                        className="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                         type="button"
+                        aria-label="Toggle password visibility"
                       >
                         <span className="material-symbols-outlined text-xl">
                           visibility
