@@ -24,6 +24,13 @@ export async function POST(request: Request) {
       );
     }
 
+    if (typeof userId !== "string" || userId.length > 100) {
+      return NextResponse.json(
+        { error: "Invalid input types or lengths exceed limits" },
+        { status: 400 }
+      );
+    }
+
     // Atomically get and delete the waiting user to prevent race conditions
     const waitingUser = await redis.getdel<string>(WAITING_KEY);
 

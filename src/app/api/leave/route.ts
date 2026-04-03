@@ -15,6 +15,16 @@ export async function POST(request: Request) {
   try {
     const { roomId, userId } = await request.json();
 
+    if (
+      (roomId !== undefined && (typeof roomId !== "string" || roomId.length > 100)) ||
+      (userId !== undefined && (typeof userId !== "string" || userId.length > 100))
+    ) {
+      return NextResponse.json(
+        { error: "Invalid input types or lengths exceed limits" },
+        { status: 400 }
+      );
+    }
+
     // If the user was in a room, notify the partner
     if (roomId) {
       await pusherServer.trigger(`chat-${roomId}`, "partner-left", {
