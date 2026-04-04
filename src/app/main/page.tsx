@@ -1,7 +1,52 @@
+"use client";
+
+import { FormEvent, useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function Home() {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setError("");
+
+    if (!email || !password) {
+      setError("Email and password are required.");
+      return;
+    }
+    
+    setLoading(true);
+
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data?.error || "Login failed. Try again.");
+        return;
+      }
+
+      router.push("/dashboard");
+    } catch {
+      setError("Network error, please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="flex-grow flex flex-col">
       <main className="flex-grow flex items-center justify-center px-4 py-12">
@@ -86,12 +131,14 @@ export default function Home() {
                   <div className="h-[1px] flex-grow bg-outline-variant/30"></div>
                 </div>
 
-                <form className="space-y-4">
+                <form className="space-y-4" onSubmit={handleSubmit}>
                   <div className="space-y-1">
                     <label className="text-xs font-semibold text-primary ml-4">
                       Student ID / Email
                     </label>
                     <input
+                      value={email}
+                      onChange={(event) => setEmail(event.target.value)}
                       className="w-full bg-surface-container-low border-none rounded-xl py-4 px-6 focus:ring-2 focus:ring-secondary/30 focus:bg-surface-bright transition-all text-on-surface placeholder:text-outline/50"
                       placeholder="student@university.edu"
                       type="email"
@@ -103,6 +150,8 @@ export default function Home() {
                     </label>
                     <div className="relative">
                       <input
+                        value={password}
+                        onChange={(event) => setPassword(event.target.value)}
                         className="w-full bg-surface-container-low border-none rounded-xl py-4 px-6 focus:ring-2 focus:ring-secondary/30 focus:bg-surface-bright transition-all text-on-surface placeholder:text-outline/50"
                         id="password-input"
                         placeholder="••••••••"
@@ -118,9 +167,20 @@ export default function Home() {
                       </button>
                     </div>
                   </div>
-                  <Link href="/dashboard" className="w-full py-4 gradient-button text-on-primary rounded-full font-bold shadow-lg shadow-primary/10 hover:scale-[1.02] active:scale-95 transition-all block text-center">
-                    Sign In
-                  </Link>
+
+                  {error && (
+                    <p className="text-sm text-red-600 bg-red-50 p-3 rounded-lg">
+                      {error}
+                    </p>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full py-4 gradient-button text-on-primary rounded-full font-bold shadow-lg shadow-primary/10 hover:scale-[1.02] active:scale-95 transition-all block text-center disabled:opacity-60"
+                  >
+                    {loading ? "Signing In..." : "Sign In"}
+                  </button>
                 </form>
 
                 <div className="space-y-4">

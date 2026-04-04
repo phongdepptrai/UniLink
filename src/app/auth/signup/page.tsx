@@ -1,7 +1,80 @@
+"use client";
+
+import { FormEvent, useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function SignUpPage() {
+  const router = useRouter();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [institution, setInstitution] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [tosChecked, setTosChecked] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setError("");
+
+    if (!name || !email || !institution || !password || !confirmPassword) {
+      setError("All fields are required.");
+      return;
+    }
+
+    if (!tosChecked) {
+      setError("You must agree to the terms of service.");
+      return;
+    }
+
+    const trimmedPassword = password.trim();
+    const trimmedConfirmPassword = confirmPassword.trim();
+
+    if (trimmedPassword.length < 6) {
+      setError("Password must be at least 6 characters.");
+      return;
+    }
+
+    if (trimmedPassword !== trimmedConfirmPassword) {
+      console.debug("Password mismatch", { trimmedPassword, trimmedConfirmPassword });
+      setError("Passwords do not match.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ 
+          name, 
+          email, 
+          institution, 
+          password: trimmedPassword,
+          confirmPassword: trimmedConfirmPassword 
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data?.error || "Signup failed, try again.");
+        return;
+      }
+
+      router.push("/dashboard");
+    } catch {
+      setError("Network error, please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-surface">
       {/* LEFT SIDE: Branding and Value Prop */}
@@ -128,7 +201,27 @@ export default function SignUpPage() {
             </p>
           </header>
 
-          <form className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Name */}
+            <div className="space-y-2">
+              <label className="font-headline text-sm font-semibold text-primary ml-1">
+                Full Name
+              </label>
+              <div className="relative group">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-on-surface-variant group-focus-within:text-primary transition-colors">
+                  <span className="material-symbols-outlined text-xl">person</span>
+                </div>
+                <input
+                  value={name}
+                  onChange={(event) => setName(event.target.value)}
+                  className="w-full pl-12 pr-4 py-4 bg-surface-container-lowest rounded-xl border-none focus:ring-2 focus:ring-secondary-fixed transition-all shadow-ambient outline-none text-on-surface placeholder:text-outline-variant"
+                  placeholder="John Doe"
+                  required
+                  type="text"
+                />
+              </div>
+            </div>
+
             {/* University Email */}
             <div className="space-y-2">
               <label className="font-headline text-sm font-semibold text-primary ml-1">
@@ -141,6 +234,9 @@ export default function SignUpPage() {
                   </span>
                 </div>
                 <input
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  name="email"
                   className="w-full pl-12 pr-4 py-4 bg-surface-container-lowest rounded-xl border-none focus:ring-2 focus:ring-secondary-fixed transition-all shadow-ambient outline-none text-on-surface placeholder:text-outline-variant"
                   placeholder="student@university.edu"
                   required
@@ -160,7 +256,13 @@ export default function SignUpPage() {
                     account_balance
                   </span>
                 </div>
-                <select defaultValue="" className="w-full pl-12 pr-10 py-4 bg-surface-container-lowest rounded-xl border-none focus:ring-2 focus:ring-secondary-fixed appearance-none transition-all shadow-ambient outline-none text-on-surface">
+                <select
+                  name="institution"
+                  value={institution}
+                  onChange={(event) => setInstitution(event.target.value)}
+                  className="w-full pl-12 pr-10 py-4 bg-surface-container-lowest rounded-xl border-none focus:ring-2 focus:ring-secondary-fixed appearance-none transition-all shadow-ambient outline-none text-on-surface"
+                  required
+                >
                   <option disabled value="">
                     Choose your campus...
                   </option>
@@ -191,6 +293,9 @@ export default function SignUpPage() {
                     <span className="material-symbols-outlined text-xl">lock</span>
                   </div>
                   <input
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                    name="password"
                     className="w-full pl-12 pr-4 py-4 bg-surface-container-lowest rounded-xl border-none focus:ring-2 focus:ring-secondary-fixed transition-all shadow-ambient outline-none text-on-surface placeholder:text-outline-variant"
                     placeholder="••••••••"
                     required
@@ -211,6 +316,9 @@ export default function SignUpPage() {
                     </span>
                   </div>
                   <input
+                    value={confirmPassword}
+                    onChange={(event) => setConfirmPassword(event.target.value)}
+                    name="confirmPassword"
                     className="w-full pl-12 pr-4 py-4 bg-surface-container-lowest rounded-xl border-none focus:ring-2 focus:ring-secondary-fixed transition-all shadow-ambient outline-none text-on-surface placeholder:text-outline-variant"
                     placeholder="••••••••"
                     required
@@ -224,6 +332,8 @@ export default function SignUpPage() {
             <div className="flex items-start gap-3 px-1">
               <div className="pt-0.5">
                 <input
+                  checked={tosChecked}
+                  onChange={(event) => setTosChecked(event.target.checked)}
                   className="w-5 h-5 rounded-lg border-outline-variant text-secondary-fixed focus:ring-secondary-fixed bg-surface-container-lowest"
                   id="tos"
                   type="checkbox"
@@ -241,12 +351,19 @@ export default function SignUpPage() {
               </label>
             </div>
 
+            {error && (
+              <p className="text-sm text-red-600 bg-red-50 p-3 rounded-lg">
+                {error}
+              </p>
+            )}
+
             {/* Primary CTA */}
             <button
-              className="w-full py-5 rounded-full gradient-primary text-white font-headline font-bold text-lg shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 group"
+              className="w-full py-5 rounded-full gradient-primary text-white font-headline font-bold text-lg shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 group disabled:opacity-60"
               type="submit"
+              disabled={loading}
             >
-              Create My Account
+              {loading ? "Creating Account..." : "Create My Account"}
               <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">
                 arrow_forward
               </span>
