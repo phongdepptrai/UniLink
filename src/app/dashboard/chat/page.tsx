@@ -379,6 +379,7 @@ export default function ChatPage() {
           ref={inputRef}
           type="text"
           placeholder="Type your message..."
+          aria-label="Type your message"
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -388,11 +389,12 @@ export default function ChatPage() {
         <button
           onClick={sendMessage}
           disabled={!inputText.trim()}
-          className="chat-send-btn"
+          className="chat-send-btn focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           id="chat-send-button"
           title="Send message"
+          aria-label="Send message"
         >
-          <span className="material-symbols-outlined">send</span>
+          <span className="material-symbols-outlined" aria-hidden="true">send</span>
         </button>
       </div>
     </div>
