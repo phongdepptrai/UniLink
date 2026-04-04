@@ -5,11 +5,12 @@ import User from '@/models/User';
 // GET single user
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     await connectDB();
-    const user = await User.findById(params.id);
+    const user = await User.findById(id);
     
     if (!user) {
       return NextResponse.json(
@@ -30,12 +31,13 @@ export async function GET(
 // PUT update user
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     await connectDB();
     const body = await request.json();
-    const user = await User.findByIdAndUpdate(params.id, body, {
+    const user = await User.findByIdAndUpdate(id, body, {
       new: true,
       runValidators: true,
     });
@@ -59,11 +61,12 @@ export async function PUT(
 // DELETE user
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     await connectDB();
-    const user = await User.findByIdAndDelete(params.id);
+    const user = await User.findByIdAndDelete(id);
     
     if (!user) {
       return NextResponse.json(
