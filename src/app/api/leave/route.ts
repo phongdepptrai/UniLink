@@ -15,6 +15,16 @@ export async function POST(request: Request) {
   try {
     const { roomId, userId } = await request.json();
 
+    if (
+      (roomId && (typeof roomId !== "string" || roomId.length > 100)) ||
+      (userId && (typeof userId !== "string" || userId.length > 100))
+    ) {
+      return NextResponse.json(
+        { error: "Invalid field types or lengths exceeded" },
+        { status: 400 }
+      );
+    }
+
     // If the user was in a room, notify the partner
     if (roomId) {
       await pusherServer.trigger(`chat-${roomId}`, "partner-left", {
