@@ -388,9 +388,10 @@ export default function ChatPage() {
         <button
           onClick={sendMessage}
           disabled={!inputText.trim()}
-          className="chat-send-btn"
+          className="chat-send-btn focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           id="chat-send-button"
           title="Send message"
+          aria-label="Send message"
         >
           <span className="material-symbols-outlined">send</span>
         </button>
