@@ -7,7 +7,19 @@ export async function POST(request: Request) {
   try {
     const { roomId, text, sender } = await request.json();
 
-    if (!roomId || !text || !sender) {
+    // Validate types and lengths to prevent remote client-side DoS
+    if (
+      typeof roomId !== "string" || roomId.length > 100 ||
+      typeof text !== "string" || text.length > 2000 ||
+      typeof sender !== "string" || sender.length > 100
+    ) {
+      return NextResponse.json(
+        { error: "Invalid payload format or length exceeded" },
+        { status: 400 }
+      );
+    }
+
+    if (!roomId.trim() || !text.trim() || !sender.trim()) {
       return NextResponse.json(
         { error: "Missing required fields: roomId, text, sender" },
         { status: 400 }
