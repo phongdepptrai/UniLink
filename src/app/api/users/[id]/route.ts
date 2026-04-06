@@ -10,7 +10,7 @@ export async function GET(
   try {
     const { id } = await params;
     await connectDB();
-    const user = await User.findById(id);
+    const user = await User.findById(id).select('-password');
     
     if (!user) {
       return NextResponse.json(
@@ -40,7 +40,7 @@ export async function PUT(
     const user = await User.findByIdAndUpdate(id, body, {
       new: true,
       runValidators: true,
-    });
+    }).select('-password');
     
     if (!user) {
       return NextResponse.json(
