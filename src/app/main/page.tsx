@@ -9,6 +9,7 @@ export default function Home() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -152,17 +153,20 @@ export default function Home() {
                       <input
                         value={password}
                         onChange={(event) => setPassword(event.target.value)}
-                        className="w-full bg-surface-container-low border-none rounded-xl py-4 px-6 focus:ring-2 focus:ring-secondary/30 focus:bg-surface-bright transition-all text-on-surface placeholder:text-outline/50"
+                        className="w-full bg-surface-container-low border-none rounded-xl py-4 px-6 focus:ring-2 focus:ring-secondary/30 focus:bg-surface-bright transition-all text-on-surface placeholder:text-outline/50 pr-12"
                         id="password-input"
                         placeholder="••••••••"
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                       />
                       <button
-                        className="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-full p-1"
                         type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        aria-label={showPassword ? "Hide password" : "Show password"}
+                        aria-pressed={showPassword}
                       >
                         <span className="material-symbols-outlined text-xl">
-                          visibility
+                          {showPassword ? "visibility_off" : "visibility"}
                         </span>
                       </button>
                     </div>
