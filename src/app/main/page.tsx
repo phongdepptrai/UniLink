@@ -9,6 +9,7 @@ export default function Home() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -110,7 +111,7 @@ export default function Home() {
                   </p>
                 </div>
 
-                <button className="w-full flex items-center justify-center gap-3 py-4 px-6 bg-surface border border-outline-variant/30 rounded-full hover:bg-surface-container-low transition-all duration-200 group">
+                <button className="w-full flex items-center justify-center gap-3 py-4 px-6 bg-surface border border-outline-variant/30 rounded-full hover:bg-surface-container-low transition-all duration-200 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
                   <Image
                     alt="Google Logo"
                     className="w-6 h-6"
@@ -155,14 +156,16 @@ export default function Home() {
                         className="w-full bg-surface-container-low border-none rounded-xl py-4 px-6 focus:ring-2 focus:ring-secondary/30 focus:bg-surface-bright transition-all text-on-surface placeholder:text-outline/50"
                         id="password-input"
                         placeholder="••••••••"
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                       />
                       <button
-                        className="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-full p-1"
                         type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        aria-label={showPassword ? "Hide password" : "Show password"}
                       >
                         <span className="material-symbols-outlined text-xl">
-                          visibility
+                          {showPassword ? "visibility_off" : "visibility"}
                         </span>
                       </button>
                     </div>
@@ -177,7 +180,7 @@ export default function Home() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full py-4 gradient-button text-on-primary rounded-full font-bold shadow-lg shadow-primary/10 hover:scale-[1.02] active:scale-95 transition-all block text-center disabled:opacity-60"
+                    className="w-full py-4 gradient-button text-on-primary rounded-full font-bold shadow-lg shadow-primary/10 hover:scale-[1.02] active:scale-95 transition-all block text-center disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                   >
                     {loading ? "Signing In..." : "Sign In"}
                   </button>
@@ -189,7 +192,7 @@ export default function Home() {
                     <span className="text-[10px] text-outline font-bold uppercase tracking-widest leading-none">New to AnonEdu?</span>
                     <div className="h-[1px] flex-grow bg-outline-variant/20"></div>
                   </div>
-                  <Link href="/auth/signup" className="w-full block text-center py-4 border-2 border-primary/20 text-primary rounded-full font-bold hover:bg-primary/5 hover:border-primary/30 transition-all active:scale-95">
+                  <Link href="/auth/signup" className="w-full block text-center py-4 border-2 border-primary/20 text-primary rounded-full font-bold hover:bg-primary/5 hover:border-primary/30 transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
                     Create Account
                   </Link>
                 </div>
