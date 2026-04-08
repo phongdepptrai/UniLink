@@ -10,7 +10,7 @@ export async function GET(
   try {
     const { id } = await params;
     await connectDB();
-    const user = await User.findById(id);
+    const user = await User.findById(id).select('-password');
     
     if (!user) {
       return NextResponse.json(
@@ -20,7 +20,8 @@ export async function GET(
     }
     
     return NextResponse.json({ success: true, data: user });
-  } catch (error) {
+  } catch (error: unknown) {
+    console.error('Error fetching user:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to fetch user' },
       { status: 500 }
@@ -40,7 +41,7 @@ export async function PUT(
     const user = await User.findByIdAndUpdate(id, body, {
       new: true,
       runValidators: true,
-    });
+    }).select('-password');
     
     if (!user) {
       return NextResponse.json(
@@ -50,7 +51,8 @@ export async function PUT(
     }
     
     return NextResponse.json({ success: true, data: user });
-  } catch (error) {
+  } catch (error: unknown) {
+    console.error('Error updating user:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to update user' },
       { status: 400 }
@@ -76,7 +78,8 @@ export async function DELETE(
     }
     
     return NextResponse.json({ success: true, data: {} });
-  } catch (error) {
+  } catch (error: unknown) {
+    console.error('Error deleting user:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to delete user' },
       { status: 500 }

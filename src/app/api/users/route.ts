@@ -10,7 +10,7 @@ export async function GET() {
     await connectDB();
     console.log('MongoDB connected');
 
-    const users = await User.find({});
+    const users = await User.find({}).select('-password');
     return NextResponse.json({ success: true, data: users });
 
   } catch (error: unknown) {
@@ -54,7 +54,6 @@ export async function POST(request: NextRequest) {
     console.log('MongoDB connected');
 
     const body = await parseRequestBody(request);
-    console.log('BODY:', body);
 
     const { name, email, institution, password, confirmPassword } = body as {
       name?: string;
@@ -95,8 +94,11 @@ export async function POST(request: NextRequest) {
       password: hashedPassword,
     });
 
+    const userObj = user.toObject();
+    delete userObj.password;
+
     return NextResponse.json(
-      { success: true, data: user },
+      { success: true, data: userObj },
       { status: 201 }
     );
 

@@ -20,12 +20,16 @@ function generateUserId(): string {
   return `anon-${Math.random().toString(36).slice(2, 8)}`;
 }
 
+// Cache Intl.DateTimeFormat instance to avoid expensive re-instantiations
+// during render, which improves performance when formatting many timestamps.
+const timeFormatter = new Intl.DateTimeFormat(undefined, {
+  hour: "2-digit",
+  minute: "2-digit",
+});
+
 // Format timestamp for display
 function formatTime(timestamp: number): string {
-  return new Date(timestamp).toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  return timeFormatter.format(timestamp);
 }
 
 export default function ChatPage() {
