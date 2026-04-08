@@ -14,7 +14,6 @@ export async function GET(request: NextRequest) {
     console.log(`Fetching users: page=${page}, limit=${limit}`);
 
     await connectDB();
-    console.log('MongoDB connected');
 
     // Fetch users with pagination and exclude password field
     const [users, total] = await Promise.all([
@@ -73,12 +72,9 @@ async function parseRequestBody(request: NextRequest) {
 // POST create new user
 export async function POST(request: NextRequest) {
   try {
-    console.log('Connecting to MongoDB...');
     await connectDB();
-    console.log('MongoDB connected');
 
     const body = await parseRequestBody(request);
-    console.log('BODY:', body);
 
     const { name, email, institution, password, confirmPassword } = body as {
       name?: string;
@@ -119,8 +115,11 @@ export async function POST(request: NextRequest) {
       password: hashedPassword,
     });
 
+    const userObj = user.toObject();
+    delete userObj.password;
+
     return NextResponse.json(
-      { success: true, data: user },
+      { success: true, data: userObj },
       { status: 201 }
     );
 

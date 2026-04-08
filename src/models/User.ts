@@ -1,4 +1,4 @@
-import mongoose, { Schema, model, models } from 'mongoose';
+import { Schema, model, models } from 'mongoose';
 
 export interface IUser {
   name: string;
@@ -26,6 +26,7 @@ const UserSchema = new Schema<IUser>({
   password: {
     type: String,
     required: [true, 'Password is required'],
+    select: false,
   },
   createdAt: {
     type: Date,
