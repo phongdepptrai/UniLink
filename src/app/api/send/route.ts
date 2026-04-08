@@ -14,6 +14,24 @@ export async function POST(request: Request) {
       );
     }
 
+    if (
+      typeof roomId !== 'string' ||
+      typeof text !== 'string' ||
+      typeof sender !== 'string'
+    ) {
+      return NextResponse.json(
+        { error: "Invalid field types: roomId, text, and sender must be strings" },
+        { status: 400 }
+      );
+    }
+
+    if (text.length > 1000 || roomId.length > 100 || sender.length > 100) {
+      return NextResponse.json(
+        { error: "Field length exceeded limit" },
+        { status: 400 }
+      );
+    }
+
     // Trigger the message event on the shared chat channel
     await pusherServer.trigger(`chat-${roomId}`, "message-event", {
       text,
