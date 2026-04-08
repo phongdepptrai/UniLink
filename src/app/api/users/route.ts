@@ -6,9 +6,7 @@ import User from '../../../models/User';
 // GET all users
 export async function GET() {
   try {
-    console.log('Connecting to MongoDB...');
     await connectDB();
-    console.log('MongoDB connected');
 
     const users = await User.find({}).select('-password');
     return NextResponse.json({ success: true, data: users });
@@ -49,9 +47,7 @@ async function parseRequestBody(request: NextRequest) {
 // POST create new user
 export async function POST(request: NextRequest) {
   try {
-    console.log('Connecting to MongoDB...');
     await connectDB();
-    console.log('MongoDB connected');
 
     const body = await parseRequestBody(request);
 
