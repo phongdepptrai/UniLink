@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 2️⃣ Check if user exists
-    const user = await User.findOne({ email: email.toLowerCase() });
+    const user = await User.findOne({ email: email.toLowerCase() }).select('+password');
 
     if (!user) {
       return NextResponse.json(
