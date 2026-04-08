@@ -54,7 +54,6 @@ export async function POST(request: NextRequest) {
     console.log('MongoDB connected');
 
     const body = await parseRequestBody(request);
-    console.log('BODY:', body);
 
     const { name, email, institution, password, confirmPassword } = body as {
       name?: string;
