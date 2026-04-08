@@ -25,9 +25,18 @@ export async function POST(request: Request) {
       );
     }
 
-    if (text.length > 1000 || roomId.length > 100 || sender.length > 100) {
+    const lengthViolations = [
+      { field: "roomId", maxLength: 100, actualLength: roomId.length },
+      { field: "text", maxLength: 1000, actualLength: text.length },
+      { field: "sender", maxLength: 100, actualLength: sender.length },
+    ].filter(({ maxLength, actualLength }) => actualLength > maxLength);
+
+    if (lengthViolations.length > 0) {
       return NextResponse.json(
-        { error: "Field length exceeded limit" },
+        {
+          error: "Field length validation failed",
+          details: lengthViolations,
+        },
         { status: 400 }
       );
     }
