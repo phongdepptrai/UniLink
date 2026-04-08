@@ -3,13 +3,38 @@ import bcrypt from 'bcryptjs';
 import connectDB from '../../../lib/mongodb';
 import User from '../../../models/User';
 
-// GET all users
-export async function GET() {
+// GET all users (with pagination)
+export async function GET(request: NextRequest) {
   try {
+    const { searchParams } = new URL(request.url);
+    const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10) || 1);
+    const limit = Math.max(1, Math.min(100, parseInt(searchParams.get('limit') || '10', 10) || 10));
+    const skip = (page - 1) * limit;
+
+    console.log(`Fetching users: page=${page}, limit=${limit}`);
+
     await connectDB();
 
-    const users = await User.find({}).select('-password');
-    return NextResponse.json({ success: true, data: users });
+    // Fetch users with pagination and exclude password field
+    const [users, total] = await Promise.all([
+      User.find({}).select('-password').skip(skip).limit(limit).lean(),
+      User.countDocuments({}),
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+
+    return NextResponse.json({
+      success: true,
+      data: users,
+      pagination: {
+        total,
+        page,
+        limit,
+        pages: totalPages,
+        hasNext: page < totalPages,
+        hasPrev: page > 1,
+      },
+    });
 
   } catch (error: unknown) {
     console.error('GET ERROR:', error);
