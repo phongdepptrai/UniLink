@@ -38,27 +38,7 @@ export async function PUT(
     const { id } = await params;
     await connectDB();
     const body = await request.json();
-
-    if ('password' in body) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'Password updates must be handled through a dedicated password update flow',
-        },
-        { status: 400 }
-      );
-    }
-
-    const allowedFields = ['name', 'email', 'institution'] as const;
-    const updateData: Partial<Record<(typeof allowedFields)[number], unknown>> = {};
-
-    for (const field of allowedFields) {
-      if (field in body) {
-        updateData[field] = body[field];
-      }
-    }
-
-    const user = await User.findByIdAndUpdate(id, updateData, {
+    const user = await User.findByIdAndUpdate(id, body, {
       new: true,
       runValidators: true,
     }).select('-password');
