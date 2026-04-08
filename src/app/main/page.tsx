@@ -153,7 +153,7 @@ export default function Home() {
                       <input
                         value={password}
                         onChange={(event) => setPassword(event.target.value)}
-                        className="w-full bg-surface-container-low border-none rounded-xl py-4 px-6 focus:ring-2 focus:ring-secondary/30 focus:bg-surface-bright transition-all text-on-surface placeholder:text-outline/50"
+                        className="w-full bg-surface-container-low border-none rounded-xl py-4 pl-6 pr-12 focus:ring-2 focus:ring-secondary/30 focus:bg-surface-bright transition-all text-on-surface placeholder:text-outline/50"
                         id="password-input"
                         placeholder="••••••••"
                         type={showPassword ? "text" : "password"}
