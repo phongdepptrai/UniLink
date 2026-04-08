@@ -163,6 +163,8 @@ export default function Home() {
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
                         aria-label={showPassword ? "Hide password" : "Show password"}
+                        aria-pressed={showPassword}
+                        aria-controls="password-input"
                       >
                         <span className="material-symbols-outlined text-xl">
                           {showPassword ? "visibility_off" : "visibility"}
