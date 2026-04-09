@@ -10,10 +10,10 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { email, password } = body as { email?: string; password?: string };
 
-    // 1️⃣ Check missing fields
-    if (!email || !password) {
+    // 1️⃣ Check missing fields and validate types
+    if (!email || !password || typeof email !== 'string' || typeof password !== 'string') {
       return NextResponse.json(
-        { success: false, error: 'Email and password are required' },
+        { success: false, error: 'Email and password are required and must be valid text' },
         { status: 400 }
       );
     }
@@ -22,9 +22,13 @@ export async function POST(request: NextRequest) {
     const user = await User.findOne({ email: email.toLowerCase() }).select('+password');
 
     if (!user) {
+      // Return unified error message to prevent user enumeration
+      // Simulate the time taken by bcrypt to mitigate timing-based enumeration attacks.
+      // Uses a valid bcrypt hash with cost 12 (matching user creation) to ensure consistent processing time.
+      await bcrypt.compare(password, '$2a$12$O2z8c13V.oVw.K.V9.K.V.O2z8c13V.oVw.K.V9.K.V.O2z8c13V.');
       return NextResponse.json(
-        { success: false, error: 'Account does not exist' },
-        { status: 404 }
+        { success: false, error: 'Invalid email or password' },
+        { status: 401 }
       );
     }
 
@@ -32,7 +36,7 @@ export async function POST(request: NextRequest) {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return NextResponse.json(
-        { success: false, error: 'Invalid password' },
+        { success: false, error: 'Invalid email or password' },
         { status: 401 }
       );
     }
