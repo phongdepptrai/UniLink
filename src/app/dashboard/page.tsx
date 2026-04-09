@@ -466,8 +466,9 @@ export default function Dashboard() {
         {/* New Discussion — mobile FAB */}
         <Link
           href="/dashboard/chat"
-          className="flex flex-col items-center gap-1 -mt-8 bg-gradient-to-r from-primary to-primary-container text-on-primary rounded-full w-14 h-14 flex items-center justify-center shadow-lg shadow-primary/30 active:scale-95 transition-transform"
+          className="flex flex-col items-center gap-1 -mt-8 bg-gradient-to-r from-primary to-primary-container text-on-primary rounded-full w-14 h-14 flex items-center justify-center shadow-lg shadow-primary/30 active:scale-95 transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           id="new-discussion-mobile-btn"
+          aria-label="Start new discussion"
         >
           <span className="material-symbols-outlined text-2xl" data-icon="add">
             add
