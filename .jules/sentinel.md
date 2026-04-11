@@ -11,3 +11,7 @@
 **Vulnerability:** API routes (`src/app/api/users/route.ts` and `src/app/api/users/[id]/route.ts`) returned Mongoose documents directly via `NextResponse.json()`, causing default serialization to leak sensitive fields like hashed passwords to the client.
 **Learning:** Mongoose documents passed to `NextResponse.json()` serialize all fields by default unless explicitly excluded. When returning a document, we must make sure to exclude sensitive keys.
 **Prevention:** Always use `.select('-password')` (or exclude other sensitive fields) for Mongoose queries, and convert `create` responses using `.toObject()` to strip sensitive keys before returning them to clients in Next.js API routes.
+## 2024-04-10 - User Enumeration and Timing Attacks in Authentication
+**Vulnerability:** The login API route was returning different error messages ("Account does not exist" vs "Invalid password") and returning immediately if an email didn't exist without doing a slow hash comparison.
+**Learning:** Returning distinct error messages or completing the request faster when an email doesn't exist allows an attacker to enumerate which emails are registered on the platform. Timing attacks exploit the difference in processing time (hash comparisons are intentionally slow).
+**Prevention:** Always use unified error messages (e.g., "Invalid email or password") and ensure constant time execution by performing a dummy hash comparison even when the user is not found.
