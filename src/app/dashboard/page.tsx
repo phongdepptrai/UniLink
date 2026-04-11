@@ -112,12 +112,15 @@ export default function Dashboard() {
             <span>New Discussion</span>
           </Link>
           <div className="border-t border-outline-variant/20 pt-4 space-y-1">
-            <div className="text-slate-600 dark:text-slate-400 p-3 flex items-center gap-3 hover:bg-[#e0e3e5] dark:hover:bg-slate-800 transition-all cursor-pointer">
+            <Link
+              href="/dashboard/setting"
+              className="text-slate-600 dark:text-slate-400 p-3 flex items-center gap-3 hover:bg-[#e0e3e5] dark:hover:bg-slate-800 transition-all cursor-pointer active:opacity-80 rounded-xl"
+            >
               <span className="material-symbols-outlined" data-icon="settings">
                 settings
               </span>
               <span>Settings</span>
-            </div>
+            </Link>
             <div className="text-slate-600 dark:text-slate-400 p-3 flex items-center gap-3 hover:bg-[#e0e3e5] dark:hover:bg-slate-800 transition-all cursor-pointer">
               <span
                 className="material-symbols-outlined"
