@@ -16,9 +16,10 @@ export async function GET(request: NextRequest) {
     await connectDB();
 
     // Fetch users with pagination and exclude password field
+    // Bolt: Use estimatedDocumentCount for O(1) total count performance
     const [users, total] = await Promise.all([
       User.find({}).select('-password').skip(skip).limit(limit).lean(),
-      User.countDocuments({}),
+      User.estimatedDocumentCount(),
     ]);
 
     const totalPages = Math.ceil(total / limit);
@@ -98,7 +99,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const existing = await User.findOne({ email: email.toLowerCase() });
+    // Bolt: Use exists() instead of findOne() to bypass full document fetching
+    const existing = await User.exists({ email: email.toLowerCase() });
     if (existing) {
       return NextResponse.json(
         { success: false, error: 'Email already exists' },
