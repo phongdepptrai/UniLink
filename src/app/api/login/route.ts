@@ -22,9 +22,14 @@ export async function POST(request: NextRequest) {
     const user = await User.findOne({ email: email.toLowerCase() }).select('+password');
 
     if (!user) {
+      // Simulate hash processing to prevent timing attacks
+      // This is a dummy hash with a cost factor of 12 (same as when creating user)
+      const dummyHash = '$2b$12$LJfN18DUf9VQ.7Yz0UBJ2O47es4h422Yf9hTFMs4ynwf2pEnOJvS2';
+      await bcrypt.compare(password, dummyHash);
+
       return NextResponse.json(
-        { success: false, error: 'Account does not exist' },
-        { status: 404 }
+        { success: false, error: 'Invalid email or password' },
+        { status: 401 }
       );
     }
 
@@ -32,7 +37,7 @@ export async function POST(request: NextRequest) {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return NextResponse.json(
-        { success: false, error: 'Invalid password' },
+        { success: false, error: 'Invalid email or password' },
         { status: 401 }
       );
     }
