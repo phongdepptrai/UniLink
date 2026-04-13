@@ -1,13 +1,4 @@
-## 2024-04-01 - Add security headers
-**Vulnerability:** Missing security headers
-**Learning:** Next.js requires configuring security headers in `next.config.ts`. The implementation can be done using the `headers` async function matching all routes `/(.*)`.
-**Prevention:** Next.js applications should always add basic security headers like `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, and `Permissions-Policy`.
-
-## 2024-04-02 - Explicit Input Validation for JSON Requests
-**Vulnerability:** Remote Client-Side DoS via Arbitrary JSON Broadcasts
-**Learning:** In Next.js API routes, failing to strictly validate the shape and type of data parsed via `request.json()` can allow malicious clients to broadcast objects or massive arrays instead of strings. When React attempts to render this arbitrary JSON, it can cause client-side Denial of Service (DoS) crashes for all connected users.
-**Prevention:** Always explicitly validate input types (e.g., `typeof === 'string'`) and add strict length limits for payloads parsed via `request.json()` before processing or broadcasting them.
-## 2025-04-07 - [Preventing Sensitive Data Exposure in API Routes]
-**Vulnerability:** API routes (`src/app/api/users/route.ts` and `src/app/api/users/[id]/route.ts`) returned Mongoose documents directly via `NextResponse.json()`, causing default serialization to leak sensitive fields like hashed passwords to the client.
-**Learning:** Mongoose documents passed to `NextResponse.json()` serialize all fields by default unless explicitly excluded. When returning a document, we must make sure to exclude sensitive keys.
-**Prevention:** Always use `.select('-password')` (or exclude other sensitive fields) for Mongoose queries, and convert `create` responses using `.toObject()` to strip sensitive keys before returning them to clients in Next.js API routes.
+## 2025-02-09 - Prevent User Enumeration and Timing Attacks
+**Vulnerability:** The login API route (`/api/login`) allowed user enumeration and timing attacks by returning a different error message ("Account does not exist" vs "Invalid password") and different processing times (skipping bcrypt hash processing for non-existent users).
+**Learning:** Security fixes for timing vulnerabilities require a thorough understanding of execution paths. By replacing both the error message and simulating bcrypt processing, the server's responses become uniform in content and time, avoiding timing-based enumeration attempts.
+**Prevention:** Always unify the error message structure for both 'user not found' and 'invalid credentials' checks in authentication processes. Additionally, implement dummy hash comparison using dummy passwords to disguise timing anomalies.
