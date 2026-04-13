@@ -1,8 +1,11 @@
 "use client";
 
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 export default function SettingPage() {
+    // State to track the currently active section
+    const [activeSection, setActiveSection] = useState("section-profile");
+
     // Scroll handler: Use scrollIntoView to completely fix scrolling issues in hidden containers
     const scrollToSection = useCallback((id: string) => {
         const element = document.getElementById(id);
@@ -13,6 +16,50 @@ export default function SettingPage() {
             });
         }
     }, []);
+
+    // Intersection Observer to update active section on scroll
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    // When a section enters the viewport, update the active state
+                    if (entry.isIntersecting) {
+                        setActiveSection(entry.target.id);
+                    }
+                });
+            },
+            {
+                // This margin creates a detection zone near the top-middle of the screen
+                rootMargin: "-20% 0px -60% 0px",
+            },
+        );
+
+        // Find all sections and observe them
+        const sections = document.querySelectorAll("section[id^='section-']");
+        sections.forEach((section) => observer.observe(section));
+
+        // Cleanup observer on unmount
+        return () => {
+            sections.forEach((section) => observer.unobserve(section));
+        };
+    }, []);
+
+    // Helper functions to keep button class names clean
+    const getNavButtonClass = (sectionId: string) => {
+        const isActive = activeSection === sectionId;
+        const baseClasses =
+            "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-colors text-left ";
+
+        if (isActive) {
+            return (
+                baseClasses +
+                "bg-primary/10 text-primary dark:bg-primary-container dark:text-on-primary-container font-bold"
+            );
+        }
+        return (
+            baseClasses + "text-on-surface-variant hover:bg-surface-container-highest font-medium"
+        );
+    };
 
     return (
         /* Padding adjustments!
@@ -34,16 +81,15 @@ export default function SettingPage() {
 
                     <button
                         onClick={() => scrollToSection("section-profile")}
-                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-primary/10 text-primary dark:bg-primary-container dark:text-on-primary-container font-bold text-sm transition-colors text-left"
+                        className={getNavButtonClass("section-profile")}
                     >
                         <span className="material-symbols-outlined">person</span>
                         Profile
                     </button>
 
-                    {/* Moved Video & Audio up here */}
                     <button
                         onClick={() => scrollToSection("section-video-audio")}
-                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-highest font-medium text-sm transition-colors text-left"
+                        className={getNavButtonClass("section-video-audio")}
                     >
                         <span className="material-symbols-outlined">headset_mic</span>
                         Video & Audio
@@ -51,7 +97,7 @@ export default function SettingPage() {
 
                     <button
                         onClick={() => scrollToSection("section-appearance")}
-                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-highest font-medium text-sm transition-colors text-left"
+                        className={getNavButtonClass("section-appearance")}
                     >
                         <span className="material-symbols-outlined">palette</span>
                         Appearance
@@ -59,7 +105,7 @@ export default function SettingPage() {
 
                     <button
                         onClick={() => scrollToSection("section-notifications")}
-                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-highest font-medium text-sm transition-colors text-left"
+                        className={getNavButtonClass("section-notifications")}
                     >
                         <span className="material-symbols-outlined">notifications</span>
                         Notifications
@@ -67,7 +113,7 @@ export default function SettingPage() {
 
                     <button
                         onClick={() => scrollToSection("section-security")}
-                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-highest font-medium text-sm transition-colors text-left"
+                        className={getNavButtonClass("section-security")}
                     >
                         <span className="material-symbols-outlined">lock</span>
                         Security & Account
@@ -75,7 +121,7 @@ export default function SettingPage() {
 
                     <button
                         onClick={() => scrollToSection("section-advanced")}
-                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-highest font-medium text-sm transition-colors text-left"
+                        className={getNavButtonClass("section-advanced")}
                     >
                         <span className="material-symbols-outlined">tune</span>
                         Advanced
@@ -153,7 +199,6 @@ export default function SettingPage() {
                                 />
                             </div>
 
-                            {/* Username takes 2 columns for a balanced layout */}
                             <div className="space-y-2 md:col-span-2">
                                 <label
                                     className="text-sm font-semibold text-on-surface-variant px-1"
@@ -197,7 +242,6 @@ export default function SettingPage() {
                             </span>
                         </div>
 
-                        {/* SAVE BUTTONS */}
                         <div className="flex justify-end gap-3 pt-6">
                             <button className="px-6 py-3 font-bold text-slate-500 hover:text-primary transition-colors">
                                 Discard Changes
@@ -304,7 +348,6 @@ export default function SettingPage() {
                                 </div>
                             </div>
 
-                            {/* Language selection option */}
                             <div className="flex items-center justify-between p-4 hover:bg-surface-container rounded-2xl transition-colors">
                                 <div className="flex items-center gap-4">
                                     <div className="p-3 bg-secondary-container rounded-xl text-on-secondary-container">
@@ -363,7 +406,6 @@ export default function SettingPage() {
                         </h3>
 
                         <div className="flex flex-col gap-4">
-                            {/* Keep Email verification box */}
                             <div className="bg-on-tertiary-container/5 border border-tertiary/20 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-4">
                                 <div className="flex items-center gap-4 text-center md:text-left">
                                     <div className="w-12 h-12 rounded-full bg-tertiary/10 flex items-center justify-center text-tertiary shrink-0">
@@ -385,7 +427,6 @@ export default function SettingPage() {
                                 </button>
                             </div>
 
-                            {/* 2-Factor Authentication (2FA) settings */}
                             <div className="flex items-center justify-between p-4 hover:bg-surface-container rounded-2xl transition-colors border border-outline-variant/5">
                                 <div className="flex items-center gap-4">
                                     <div className="p-3 bg-secondary-container/50 text-on-secondary-container rounded-xl shrink-0">
@@ -402,13 +443,11 @@ export default function SettingPage() {
                                         </p>
                                     </div>
                                 </div>
-                                {/* Toggle button similar to Appearance section */}
                                 <div className="w-12 h-6 bg-slate-300 dark:bg-slate-700 rounded-full relative cursor-pointer shrink-0">
                                     <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow-sm"></div>
                                 </div>
                             </div>
 
-                            {/* Password change option */}
                             <div className="flex items-center justify-between p-4 hover:bg-surface-container rounded-2xl transition-colors border border-outline-variant/5">
                                 <div className="flex items-center gap-4">
                                     <div className="p-3 bg-error-container/20 text-error rounded-xl shrink-0">
