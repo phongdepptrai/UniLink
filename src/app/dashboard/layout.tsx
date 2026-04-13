@@ -81,14 +81,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     <nav className="flex-1 space-y-1">
                         {/* Nút General */}
                         <Link
-                            href="/dashboard/general"
-                            className={`p-3 flex items-center gap-3 transition-all cursor-pointer active:opacity-80 rounded-xl ${pathname === "/dashboard/general" ? "bg-[#e0e3e5] dark:bg-slate-800 text-[#031635] dark:text-[#3afea0] font-bold" : "text-slate-600 dark:text-slate-400 hover:bg-[#e0e3e5] dark:hover:bg-slate-800"}`}
+                            href="/dashboard"
+                            className={`p-3 flex items-center gap-3 transition-all cursor-pointer active:opacity-80 rounded-xl ${pathname === "/dashboard" ? "bg-[#e0e3e5] dark:bg-slate-800 text-[#031635] dark:text-[#3afea0] font-bold" : "text-slate-600 dark:text-slate-400 hover:bg-[#e0e3e5] dark:hover:bg-slate-800"}`}
                         >
                             <span
                                 className="material-symbols-outlined"
                                 data-icon="forum"
                                 style={
-                                    pathname === "/dashboard/general"
+                                    pathname === "/dashboard"
                                         ? { fontVariationSettings: "'FILL' 1" }
                                         : {}
                                 }
