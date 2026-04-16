@@ -3,15 +3,38 @@ import bcrypt from 'bcryptjs';
 import connectDB from '../../../lib/mongodb';
 import User from '../../../models/User';
 
-// GET all users
-export async function GET() {
+// GET all users (with pagination)
+export async function GET(request: NextRequest) {
   try {
-    console.log('Connecting to MongoDB...');
-    await connectDB();
-    console.log('MongoDB connected');
+    const { searchParams } = new URL(request.url);
+    const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10) || 1);
+    const limit = Math.max(1, Math.min(100, parseInt(searchParams.get('limit') || '10', 10) || 10));
+    const skip = (page - 1) * limit;
 
-    const users = await User.find({});
-    return NextResponse.json({ success: true, data: users });
+    console.log(`Fetching users: page=${page}, limit=${limit}`);
+
+    await connectDB();
+
+    // Fetch users with pagination and exclude password field
+    const [users, total] = await Promise.all([
+      User.find({}).select('-password').skip(skip).limit(limit).lean(),
+      User.countDocuments({}),
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+
+    return NextResponse.json({
+      success: true,
+      data: users,
+      pagination: {
+        total,
+        page,
+        limit,
+        pages: totalPages,
+        hasNext: page < totalPages,
+        hasPrev: page > 1,
+      },
+    });
 
   } catch (error: unknown) {
     console.error('GET ERROR:', error);
@@ -49,12 +72,9 @@ async function parseRequestBody(request: NextRequest) {
 // POST create new user
 export async function POST(request: NextRequest) {
   try {
-    console.log('Connecting to MongoDB...');
     await connectDB();
-    console.log('MongoDB connected');
 
     const body = await parseRequestBody(request);
-    console.log('BODY:', body);
 
     const { name, email, institution, password, confirmPassword } = body as {
       name?: string;
@@ -95,8 +115,11 @@ export async function POST(request: NextRequest) {
       password: hashedPassword,
     });
 
+    const userObj = user.toObject();
+    delete userObj.password;
+
     return NextResponse.json(
-      { success: true, data: user },
+      { success: true, data: userObj },
       { status: 201 }
     );
 
