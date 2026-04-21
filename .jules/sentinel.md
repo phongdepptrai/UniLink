@@ -11,3 +11,8 @@
 **Vulnerability:** API routes (`src/app/api/users/route.ts` and `src/app/api/users/[id]/route.ts`) returned Mongoose documents directly via `NextResponse.json()`, causing default serialization to leak sensitive fields like hashed passwords to the client.
 **Learning:** Mongoose documents passed to `NextResponse.json()` serialize all fields by default unless explicitly excluded. When returning a document, we must make sure to exclude sensitive keys.
 **Prevention:** Always use `.select('-password')` (or exclude other sensitive fields) for Mongoose queries, and convert `create` responses using `.toObject()` to strip sensitive keys before returning them to clients in Next.js API routes.
+
+## 2025-04-07 - Prevent User Enumeration and Timing Attacks in Auth
+**Vulnerability:** User Enumeration and Timing Attacks via Auth endpoints.
+**Learning:** Returning different error messages or status codes depending on if the user exists vs. wrong password allows user enumeration. Differences in processing time between returning an early 404 (without hashing) vs. doing `bcrypt.compare` when a user exists can allow timing attacks.
+**Prevention:** Always return a unified error message ("Invalid email or password") and status code (401) for both invalid users and incorrect passwords. In addition, when a user is not found, simulate the time taken for hash processing by executing a dummy `bcrypt.compare` with a properly formatted hash string.
