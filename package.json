@@ -11,10 +11,10 @@
   "dependencies": {
     "@tailwindcss/container-queries": "^0.1.1",
     "@tailwindcss/forms": "^0.5.11",
+    "@upstash/redis": "^1.37.0",
     "bcryptjs": "^3.0.3",
     "mongodb": "^7.1.1",
     "mongoose": "^9.3.3",
-    "@upstash/redis": "^1.37.0",
     "next": "16.2.1",
     "pusher": "^5.3.3",
     "pusher-js": "^8.5.0",
@@ -28,7 +28,7 @@
     "@types/node": "^20.19.37",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "eslint": "^9",
+    "eslint": "9",
     "eslint-config-next": "16.2.1",
     "tailwindcss": "^4",
     "typescript": "^5"
