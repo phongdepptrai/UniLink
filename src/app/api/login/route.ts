@@ -19,7 +19,8 @@ export async function POST(request: NextRequest) {
     }
 
     // 2️⃣ Check if user exists
-    const user = await User.findOne({ email: email.toLowerCase() }).select('+password');
+    // ⚡ Bolt: Use .lean() to skip Mongoose document instantiation since we only read fields
+    const user = await User.findOne({ email: email.toLowerCase() }).select('+password').lean();
 
     if (!user) {
       return NextResponse.json(

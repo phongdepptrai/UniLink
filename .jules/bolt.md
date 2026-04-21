@@ -8,3 +8,7 @@
 ## 2024-05-18 - [Optimizing Date Formatting in React Renders]
 **Learning:** Using `new Date().toLocaleTimeString()` inside React render functions or loops is an anti-pattern as it implicitly instantiates a new `Intl.DateTimeFormat` object each time, which can become a bottleneck when rendering many items (like a list of chat messages).
 **Action:** Cache a module-level `Intl.DateTimeFormat` instance and use `formatter.format(timestamp)` instead of creating inline formatter instances or using `toLocaleTimeString` directly in hot paths.
+
+## 2024-05-21 - [Optimizing Mongoose Read/Count/Check Queries]
+**Learning:** Returning full Mongoose documents for read-only API requests increases memory overhead and serialization time. Additionally, using `countDocuments({})` performs an O(n) collection scan, and `findOne()` retrieves a full document just to check existence.
+**Action:** Always append `.lean()` to Mongoose queries when only plain JS objects are needed. Use `.estimatedDocumentCount()` for O(1) total count retrieval without filters. Use `.exists()` instead of `.findOne()` for simple existence checks.

@@ -10,7 +10,8 @@ export async function GET(
   try {
     const { id } = await params;
     await connectDB();
-    const user = await User.findById(id).select('-password');
+    // ⚡ Bolt: Use .lean() for faster execution and lower memory footprint when returning read-only data
+    const user = await User.findById(id).select('-password').lean();
     
     if (!user) {
       return NextResponse.json(
@@ -56,10 +57,11 @@ export async function PUT(
         .map((field) => [field, body[field]])
     );
 
+    // ⚡ Bolt: Use .lean() to skip Mongoose document instantiation for the response
     const user = await User.findByIdAndUpdate(id, updates, {
       new: true,
       runValidators: true,
-    }).select('-password');
+    }).select('-password').lean();
     
     if (!user) {
       return NextResponse.json(
