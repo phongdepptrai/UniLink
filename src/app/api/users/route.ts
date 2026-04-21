@@ -18,7 +18,8 @@ export async function GET(request: NextRequest) {
     // Fetch users with pagination and exclude password field
     const [users, total] = await Promise.all([
       User.find({}).select('-password').skip(skip).limit(limit).lean(),
-      User.countDocuments({}),
+      // ⚡ Bolt: Use estimatedDocumentCount() instead of countDocuments({}) for O(1) performance as it uses collection metadata
+      User.estimatedDocumentCount(),
     ]);
 
     const totalPages = Math.ceil(total / limit);
@@ -98,7 +99,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const existing = await User.findOne({ email: email.toLowerCase() });
+    // ⚡ Bolt: Use .exists() instead of .findOne() for existence checks to avoid transferring the full document
+    const existing = await User.exists({ email: email.toLowerCase() });
     if (existing) {
       return NextResponse.json(
         { success: false, error: 'Email already exists' },
